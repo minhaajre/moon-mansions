@@ -1,5 +1,5 @@
 import { Action, ActionPanel, Detail } from "@raycast/api";
-import { getMoonInfo, planetDetailLine } from "./moon";
+import { getMoonInfo, planetDetailLine, vocEndLabel } from "./moon";
 
 export default function Command() {
   const m = getMoonInfo();
@@ -8,15 +8,15 @@ export default function Command() {
     .join("\n");
   const markdown = `# ${m.emoji} ${m.phaseName}\n\n${m.illumPct.toFixed(1)}% illuminated · ${Math.round(
     m.age
-  )} days old\n\nTropical: in ${m.zodiac} · Sidereal: in ${m.siderealZodiac} (Lahiri ${m.ayanamsa.toFixed(
-    2
-  )}°)\n\n**Mansion ${m.mansion.num} — ${m.mansion.name}**\n\nNakshatra ${m.nakshatra.n} ${m.nakshatra.name} · Xiu ${
-    m.xiu.n
-  } ${m.xiu.name} ${
+  )} days old\n\n${m.voc.isVoc ? `🚫 ${vocEndLabel(m.voc)}` : `✅ Applying ${m.voc.nextAspect}`}\n\nTropical: in ${
+    m.zodiac
+  } · Sidereal: in ${m.siderealZodiac} (Lahiri ${m.ayanamsa.toFixed(2)}°)\n\n**Mansion ${m.mansion.num} — ${
+    m.mansion.name
+  }**\n\nNakshatra ${m.nakshatra.n} ${m.nakshatra.name} · Xiu ${m.xiu.n} ${m.xiu.name} ${
     m.xiu.zh
   } (approx)\n\n| Planet | Tropical | Sidereal (Lahiri) | Motion |\n| --- | --- | --- | --- |\n${rows}`;
-  const copyAll = `${m.phaseName} ${m.illumPct.toFixed(1)}% · Tropical ${m.zodiac} · Sidereal ${
-    m.siderealZodiac
+  const copyAll = `${m.phaseName} ${m.illumPct.toFixed(1)}% · Tropical ${m.zodiac} · Sidereal ${m.siderealZodiac} · ${
+    m.voc.isVoc ? vocEndLabel(m.voc) : m.voc.nextAspect
   } · Mansion ${m.mansion.num} ${m.mansion.name} · Nakshatra ${m.nakshatra.name} · Xiu ${m.xiu.name}`;
 
   return (
@@ -44,6 +44,10 @@ export default function Command() {
           <Detail.Metadata.Label title="Moon age" text={`⏳ ${Math.round(m.age)} days`} />
           <Detail.Metadata.Label title="Tropical Moon" text={`${m.zodiac}`} />
           <Detail.Metadata.Label title="Sidereal Moon" text={`${m.siderealZodiac}`} />
+          <Detail.Metadata.Label
+            title="VOC"
+            text={m.voc.isVoc ? `🚫 ${vocEndLabel(m.voc)}` : `✅ ${m.voc.nextAspect}`}
+          />
           <Detail.Metadata.Label title="Ayanamsa (Lahiri)" text={`${m.ayanamsa.toFixed(3)}°`} />
           <Detail.Metadata.Separator />
           <Detail.Metadata.Label title="Mansion number" text={`🔢 ${m.mansion.num}`} />

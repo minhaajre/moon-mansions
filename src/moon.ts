@@ -1,6 +1,6 @@
 // Ported from 28LunarMansionGuide/index.html (Meeus Ch.47 truncation, ±1-2°).
 // Do not retune constants without cross-validating 3 dates vs Stellarium/AstroSeek.
-import { ARAB_THEMES, BRANCHES, NAKSHATRAS, NakshatraInfo, STEMS, XIU, XiuInfo } from "./systems";
+import { ARAB_THEMES, BRANCHES, NAKSHATRAS, NakshatraInfo, XIU, XiuInfo } from "./systems";
 
 export interface Mansion {
   num: number;
@@ -510,6 +510,84 @@ export interface Calendars {
   vara: string;
 }
 
+export interface VocInfo {
+  isVoc: boolean;
+  ingressInHours: number;
+  nextSign: string;
+  nextAspect: string | null;
+}
+
+// ─── Void of Course: Moon makes no applying Ptolemaic aspect (0/60/90/120/180)
+// to a classical planet (Sun, Mercury, Venus, Mars, Jupiter, Saturn) before
+// leaving its current tropical sign. Forward-scan at 10-min steps; an aspect
+// counts only when closing (distance shrinking), so separating past aspects
+// still read as VOC. 6° orb, ±1–2° ephemeris family as the rest of this file.
+const VOC_ASPECTS: [number, string][] = [
+  [0, "conjunction"],
+  [60, "sextile"],
+  [90, "square"],
+  [120, "trine"],
+  [180, "opposition"],
+  [240, "trine"],
+  [270, "square"],
+  [300, "sextile"],
+];
+const VOC_ORB = 6;
+const VOC_PLANETS = ["Sun", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];
+
+function vocPlanetLon(name: string, jd: number): number {
+  return name === "Sun" ? sunLon(jd) : planetLon(name, jd);
+}
+
+function vocDist(mLon: number, pLon: number): { dist: number; name: string } {
+  const sep = (((mLon - pLon) % 360) + 360) % 360;
+  let best = { dist: 360, name: "" };
+  for (const [a, n] of VOC_ASPECTS) {
+    const d = Math.abs(sep - a);
+    if (d < best.dist) best = { dist: d, name: n };
+  }
+  return best;
+}
+
+export function getVocInfo(date = new Date()): VocInfo {
+  const jd0 = date.getTime() / 86400000 + 2440587.5;
+  const step = 10 / 1440; // 10 minutes in days
+  const maxSteps = Math.ceil(4 / step); // Moon clears a sign in <3d; 4d cap
+  const signIdx = Math.floor(moonLon(jd0) / 30) % 12;
+  const nextSign = SIGNS[(signIdx + 1) % 12];
+
+  for (let i = 0; i < maxSteps; i++) {
+    const jd = jd0 + i * step;
+    const mLon = moonLon(jd);
+    if (Math.floor(mLon / 30) % 12 !== signIdx) {
+      return { isVoc: true, ingressInHours: i * step * 24, nextSign, nextAspect: null };
+    }
+    for (const p of VOC_PLANETS) {
+      const { dist, name } = vocDist(mLon, vocPlanetLon(p, jd));
+      if (dist < VOC_ORB) {
+        const mNext = moonLon(jd + step);
+        const pNext = vocPlanetLon(p, jd + step);
+        if (vocDist(mNext, pNext).dist < dist) {
+          return {
+            isVoc: false,
+            ingressInHours: i * step * 24,
+            nextSign,
+            nextAspect: `${name} ${p} in ${(i * step * 24).toFixed(1)}h`,
+          };
+        }
+      }
+    }
+  }
+  return { isVoc: true, ingressInHours: NaN, nextSign, nextAspect: null };
+}
+
+// Display label: "VOC" plus the clock time it ends, e.g. "VOC until 10:24 PM".
+export function vocEndLabel(voc: VocInfo, now = Date.now()): string {
+  if (!voc.isVoc || !isFinite(voc.ingressInHours)) return "VOC";
+  const end = new Date(now + voc.ingressInHours * 3600e3);
+  return `VOC until ${end.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`;
+}
+
 export interface MoonInfo {
   phaseName: string;
   emoji: string;
@@ -525,6 +603,7 @@ export interface MoonInfo {
   xiu: XiuInfo;
   planets: PlanetPosition[];
   cal: Calendars;
+  voc: VocInfo;
 }
 
 // ─── Calendars: Hijri (Intl islamic, tabular ±1d), Chinese pillars (ported ───
@@ -630,16 +709,19 @@ function getCalendars(date: Date, angle: number, sunSid: number): Calendars {
   }
 
   const sex = (((jdn(date) + 49) % 60) + 60) % 60;
-  const dstem = STEMS[sex % 10],
-    dbranch = BRANCHES[sex % 12];
+  // Stem index pairs to elements (Jia/Yi = Wood … Ren/Gui = Water);
+  // display is Element + Animal ("Metal Rat"), no CJK characters.
+  const STEM_ELEMENTS = ["Wood", "Wood", "Fire", "Fire", "Earth", "Earth", "Metal", "Metal", "Water", "Water"];
+  const dBranch = BRANCHES[sex % 12];
+  const cnDay = `${STEM_ELEMENTS[sex % 10]} ${dBranch.animal}`;
   const month = date.getMonth() + 1,
     day = date.getDate();
   let cnYear = date.getFullYear();
   if (month < 2 || (month === 2 && day < 4)) cnYear -= 1;
   const yStem = (((cnYear - 4) % 10) + 10) % 10;
   const midx = chineseMonthIdx(month, day);
-  const mstem = STEMS[((yStem % 5) * 2 + 2 + midx) % 10],
-    mbranch = BRANCHES[(midx + 2) % 12];
+  const mBranch = BRANCHES[(midx + 2) % 12];
+  const cnMonth = `${STEM_ELEMENTS[((yStem % 5) * 2 + 2 + midx) % 10]} ${mBranch.animal}`;
 
   const ti = Math.floor(angle / 12) % 30;
   const paksha = ti < 15 ? "Shukla" : "Krishna";
@@ -651,12 +733,12 @@ function getCalendars(date: Date, angle: number, sunSid: number): Calendars {
 
   return {
     hijri,
-    cnDay: `${dstem.zh}${dbranch.zh} ${dbranch.animal}`,
-    cnDaySub: `${dstem.name}-${dbranch.name} day`,
-    cnDayEmoji: dbranch.emoji,
-    cnMonth: `${mstem.zh}${mbranch.zh} ${mbranch.animal}`,
-    cnMonthSub: `${mstem.name}-${mbranch.name} month`,
-    cnMonthEmoji: mbranch.emoji,
+    cnDay,
+    cnDaySub: "Day pillar",
+    cnDayEmoji: dBranch.emoji,
+    cnMonth,
+    cnMonthSub: "Month pillar",
+    cnMonthEmoji: mBranch.emoji,
     tithi,
     masa,
     vara,
@@ -754,5 +836,6 @@ export function getMoonInfo(date = new Date()): MoonInfo {
     xiu,
     planets,
     cal: getCalendars(date, angle, sunSid),
+    voc: getVocInfo(date),
   };
 }

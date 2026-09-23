@@ -1,5 +1,5 @@
 import { Clipboard, MenuBarExtra } from "@raycast/api";
-import { getMoonInfo, planetMenuTitle } from "./moon";
+import { getMoonInfo, planetMenuTitle, vocEndLabel } from "./moon";
 
 const SYMBOL: Record<string, string> = {
   Aries: "♈",
@@ -24,8 +24,10 @@ export default function Command() {
 
   return (
     <MenuBarExtra
-      title={`${m.emoji} ${m.illumPct.toFixed(0)}%`}
-      tooltip={`${m.phaseName} · ${m.illumPct.toFixed(1)}% in ${m.zodiac}`}
+      title={`${m.emoji} ${m.illumPct.toFixed(0)}%${m.voc.isVoc ? " VOC" : ""}`}
+      tooltip={`${m.phaseName} · ${m.illumPct.toFixed(1)}% in ${m.zodiac}${
+        m.voc.isVoc ? ` · ${vocEndLabel(m.voc)}` : ""
+      }`}
     >
       <MenuBarExtra.Section title="Calendars">
         <MenuBarExtra.Item icon="🕌" title={m.cal.hijri} subtitle="Hijri" onAction={copy(m.cal.hijri)} />
@@ -81,6 +83,12 @@ export default function Command() {
           title={`${m.ayanamsa.toFixed(3)}°`}
           subtitle="Ayanamsa"
           onAction={copy(`${m.ayanamsa.toFixed(3)}°`)}
+        />
+        <MenuBarExtra.Item
+          icon={m.voc.isVoc ? "🚫" : "✅"}
+          title={m.voc.isVoc ? vocEndLabel(m.voc) : `Applying: ${m.voc.nextAspect}`}
+          subtitle="VOC"
+          onAction={copy(m.voc.isVoc ? vocEndLabel(m.voc) : `Moon applying: ${m.voc.nextAspect}`)}
         />
       </MenuBarExtra.Section>
       <MenuBarExtra.Section title="Arab mansion">
