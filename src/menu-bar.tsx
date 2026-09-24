@@ -1,5 +1,5 @@
 import { Clipboard, MenuBarExtra } from "@raycast/api";
-import { getMoonInfo, planetMenuTitle, vocEndLabel } from "./moon";
+import { getMoonInfo, nakshatraTheme, planetMenuTitle, splitTwoLines, vocEndLabel } from "./moon";
 
 const SYMBOL: Record<string, string> = {
   Aries: "♈",
@@ -106,7 +106,9 @@ export default function Command() {
           onAction={copy(m.mansion.divineName)}
         />
         <MenuBarExtra.Item icon="📐" title={m.mansion.deg} subtitle="Degrees" onAction={copy(m.mansion.deg)} />
-        <MenuBarExtra.Item icon="💭" title={m.mansion.theme} onAction={copy(m.mansion.theme)} />
+        {splitTwoLines(m.mansion.theme).map((line, i) => (
+          <MenuBarExtra.Item key={`mansion-theme-${i}`} icon="💭" title={line} onAction={copy(m.mansion.theme)} />
+        ))}
       </MenuBarExtra.Section>
       <MenuBarExtra.Section title="Vedic nakshatra">
         <MenuBarExtra.Item
@@ -123,7 +125,14 @@ export default function Command() {
           subtitle="Rulers"
           onAction={copy(`${m.nakshatra.planet}, ${m.nakshatra.deity}`)}
         />
-        <MenuBarExtra.Item icon="💭" title={m.nakshatra.theme} onAction={copy(m.nakshatra.theme)} />
+        {splitTwoLines(nakshatraTheme(m.nakshatra)).map((line, i) => (
+          <MenuBarExtra.Item
+            key={`nakshatra-theme-${i}`}
+            icon="💭"
+            title={line}
+            onAction={copy(nakshatraTheme(m.nakshatra))}
+          />
+        ))}
       </MenuBarExtra.Section>
       <MenuBarExtra.Section title="Chinese lodge (approx)">
         <MenuBarExtra.Item
@@ -133,7 +142,9 @@ export default function Command() {
           onAction={copy(`Xiu ${m.xiu.n} ${m.xiu.name} ${m.xiu.zh} (${m.xiu.group})`)}
         />
         <MenuBarExtra.Item icon="🏯" title={m.xiu.group} subtitle="Palace" onAction={copy(m.xiu.group)} />
-        <MenuBarExtra.Item icon="💭" title={m.xiu.theme} onAction={copy(m.xiu.theme)} />
+        {splitTwoLines(m.xiu.theme).map((line, i) => (
+          <MenuBarExtra.Item key={`xiu-theme-${i}`} icon="💭" title={line} onAction={copy(m.xiu.theme)} />
+        ))}
       </MenuBarExtra.Section>
       <MenuBarExtra.Section title="Planets — Tropical · Sidereal">
         {m.planets.map((p) => (

@@ -1,5 +1,5 @@
 import { Action, ActionPanel, Detail } from "@raycast/api";
-import { getMoonInfo, planetDetailLine, vocEndLabel } from "./moon";
+import { getMoonInfo, nakshatraTheme, planetDetailLine, vocEndLabel } from "./moon";
 
 export default function Command() {
   const m = getMoonInfo();
@@ -12,9 +12,11 @@ export default function Command() {
     m.zodiac
   } · Sidereal: in ${m.siderealZodiac} (Lahiri ${m.ayanamsa.toFixed(2)}°)\n\n**Mansion ${m.mansion.num} — ${
     m.mansion.name
-  }**\n\nNakshatra ${m.nakshatra.n} ${m.nakshatra.name} · Xiu ${m.xiu.n} ${m.xiu.name} ${
-    m.xiu.zh
-  } (approx)\n\n| Planet | Tropical | Sidereal (Lahiri) | Motion |\n| --- | --- | --- | --- |\n${rows}`;
+  }**\n\n${m.mansion.theme}\n\n**Nakshatra ${m.nakshatra.n} — ${m.nakshatra.name}**\n\n${nakshatraTheme(
+    m.nakshatra
+  )} (${m.nakshatra.planet} · ${m.nakshatra.deity})\n\n**Xiu ${m.xiu.n} — ${m.xiu.name} ${m.xiu.zh} (approx)**\n\n${
+    m.xiu.theme
+  }\n\n| Planet | Tropical | Sidereal (Lahiri) | Motion |\n| --- | --- | --- | --- |\n${rows}`;
   const copyAll = `${m.phaseName} ${m.illumPct.toFixed(1)}% · Tropical ${m.zodiac} · Sidereal ${m.siderealZodiac} · ${
     m.voc.isVoc ? vocEndLabel(m.voc) : m.voc.nextAspect
   } · Mansion ${m.mansion.num} ${m.mansion.name} · Nakshatra ${m.nakshatra.name} · Xiu ${m.xiu.name}`;

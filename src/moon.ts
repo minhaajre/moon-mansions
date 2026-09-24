@@ -497,6 +497,65 @@ export function planetDetailLine(p: PlanetPosition): string {
   return `Tropical   ${trop}    Sidereal   ${sid}    ${p.motion}`;
 }
 
+// Split a long description into at most two lines at the word boundary
+// nearest the midpoint, so truncated menu/metadata rows stay readable.
+// Returns one line when the text already fits.
+export function splitTwoLines(text: string): string[] {
+  if (text.length <= 100) return [text];
+  const mid = Math.floor(text.length / 2);
+  let cut = -1;
+  let bestDist = Infinity;
+  for (let i = text.indexOf(" "); i !== -1; i = text.indexOf(" ", i + 1)) {
+    const dist = Math.abs(i - mid);
+    if (dist < bestDist) {
+      bestDist = dist;
+      cut = i;
+      if (i >= mid) break;
+    }
+  }
+  if (cut < 0) return [text];
+  return [text.slice(0, cut).trimEnd(), text.slice(cut + 1).trimStart()];
+}
+
+// One-line counsel per nakshatra, distilled from upstream bestFor/avoid
+// (IbnArbi/client/src/data/nakshatras.ts). Kept here — not in systems.ts,
+// which is generated and must not be hand-edited.
+const NAKSHATRA_COUNSEL: Record<number, string> = {
+  1: "Favors new ventures, learning, trade and healing; avoid locking into long projects.",
+  2: "Favors surgery, decisive cuts and contests; avoid marriage, ceremony and diplomacy.",
+  3: "Favors fire, metalwork and engineering; avoid delicate talks and marriage.",
+  4: "Favors property, foundations, farming and lasting commitments; avoid throwaway errands and travel.",
+  5: "Favors marriage, friendship, music and study; avoid aggression and conflict.",
+  6: "Favors research and inner work through upheaval; avoid marriage, money deals and celebrations.",
+  7: "Favors travel, trade, job moves and negotiation; avoid foundations and permanent ties.",
+  8: "Favors new ventures, learning, trade and creative work; avoid long projects and marriage.",
+  9: "Favors research and deep transformative work; avoid marriage, money deals and celebrations.",
+  10: "Favors bold, competitive and military action; avoid marriage, ceremony and diplomacy.",
+  11: "Favors competitive action and fire or chemical work; avoid marriage and ceremony.",
+  12: "Favors property, foundations and lasting alliances; avoid temporary ventures and travel.",
+  13: "Favors new ventures, learning, trade and craft; avoid locking into long projects.",
+  14: "Favors marriage, friendship, music and study; avoid aggression and conflict.",
+  15: "Favors travel, transport, trade and moves; avoid foundations and permanent ties.",
+  16: "Favors fire, metalwork and engineering; avoid delicate talks and marriage.",
+  17: "Favors marriage, friendship, music and study; avoid aggression and conflict.",
+  18: "Favors research and inner work through upheaval; avoid marriage, money deals and celebrations.",
+  19: "Favors research and decisive clearing for transformation; avoid marriage, money deals and celebrations.",
+  20: "Favors bold, competitive and military action; avoid marriage, ceremony and diplomacy.",
+  21: "Favors property, foundations and lasting enterprise; avoid temporary ventures and travel.",
+  22: "Favors travel, trade, job moves and negotiation; avoid foundations and permanent ties.",
+  23: "Favors travel, transport, trade and moves; avoid foundations and permanent ties.",
+  24: "Favors travel, trade, job moves and negotiation; avoid foundations and permanent ties.",
+  25: "Favors surgery, decisive cuts and contests; avoid marriage, ceremony and diplomacy.",
+  26: "Favors property, foundations and solemn vows; avoid temporary ventures and travel.",
+  27: "Favors marriage, friendship, music and study; avoid aggression and conflict.",
+};
+
+// Full Vedic theme line: etymological meaning plus one line of counsel.
+export function nakshatraTheme(n: NakshatraInfo): string {
+  const counsel = NAKSHATRA_COUNSEL[n.n];
+  return counsel ? `${n.theme} — ${counsel}` : n.theme;
+}
+
 export interface Calendars {
   hijri: string;
   cnDay: string;
