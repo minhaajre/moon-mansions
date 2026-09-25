@@ -25,7 +25,7 @@ export default function Command() {
   return (
     <MenuBarExtra
       title={`${m.emoji} ${m.illumPct.toFixed(0)}%${m.voc.isVoc ? " VOC" : ""}`}
-      tooltip={`${m.phaseName} · ${m.illumPct.toFixed(1)}% in ${m.zodiac}${
+      tooltip={`${m.phaseName} · ${m.trend} · ${m.illumPct.toFixed(1)}% in ${m.zodiac}${
         m.voc.isVoc ? ` · ${vocEndLabel(m.voc)}` : ""
       }`}
     >
@@ -50,15 +50,15 @@ export default function Command() {
       <MenuBarExtra.Section title="Moon">
         <MenuBarExtra.Item
           icon={m.emoji}
-          title={m.phaseName}
+          title={`${m.phaseName} · ${m.trend}`}
           subtitle="Phase"
-          onAction={copy(`${m.phaseName} ${m.illumPct.toFixed(1)}% in ${m.zodiac}`)}
+          onAction={copy(`${m.phaseName} (${m.trend.toLowerCase()}) ${m.illumPct.toFixed(1)}% in ${m.zodiac}`)}
         />
         <MenuBarExtra.Item
           icon="✨"
-          title={`${m.illumPct.toFixed(1)}%`}
+          title={`${m.illumPct.toFixed(1)}% · ${m.trend}`}
           subtitle="Illumination"
-          onAction={copy(`${m.illumPct.toFixed(1)}%`)}
+          onAction={copy(`${m.illumPct.toFixed(1)}% ${m.trend.toLowerCase()}`)}
         />
         <MenuBarExtra.Item
           icon="⏳"

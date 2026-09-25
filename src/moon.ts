@@ -647,10 +647,13 @@ export function vocEndLabel(voc: VocInfo, now = Date.now()): string {
   return `VOC until ${end.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`;
 }
 
+export type MoonTrend = "Waxing" | "Waning";
+
 export interface MoonInfo {
   phaseName: string;
   emoji: string;
   illumPct: number;
+  trend: MoonTrend;
   age: number;
   zodiac: string;
   longitude: number;
@@ -811,6 +814,8 @@ export function getMoonInfo(date = new Date()): MoonInfo {
   const angle = (((mLon - sLon) % 360) + 360) % 360;
   const illumPct = ((1 - Math.cos(angle * (Math.PI / 180))) / 2) * 100;
   const age = (angle / 360) * 29.53058867;
+  // Sun→Moon elongation 0–180° = lighting up, 180–360° = darkening.
+  const trend: MoonTrend = angle < 180 ? "Waxing" : "Waning";
 
   let phaseName: string;
   let emoji: string;
@@ -884,6 +889,7 @@ export function getMoonInfo(date = new Date()): MoonInfo {
     phaseName,
     emoji,
     illumPct,
+    trend,
     age,
     zodiac: SIGNS[Math.floor(mLon / 30) % 12],
     longitude: mLon,

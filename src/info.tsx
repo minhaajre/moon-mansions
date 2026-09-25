@@ -6,15 +6,17 @@ export default function Command() {
   const rows = m.planets
     .map((p) => `| ${p.name} | ${p.deg} ${p.sign} | ${p.sidDeg} ${p.sidSign} | ${p.motion} |`)
     .join("\n");
-  const markdown = `# ${m.emoji} ${m.phaseName}\n\n${m.illumPct.toFixed(1)}% illuminated · ${Math.round(
-    m.age
-  )} days old\n\n${m.voc.isVoc ? `🚫 ${vocEndLabel(m.voc)}` : `✅ Applying ${m.voc.nextAspect}`}\n\nTropical: in ${
-    m.zodiac
-  } · Sidereal: in ${m.siderealZodiac} (Lahiri ${m.ayanamsa.toFixed(2)}°)\n\n**Mansion ${m.mansion.num} — ${
-    m.mansion.name
-  }**\n\n${m.mansion.theme}\n\n**Nakshatra ${m.nakshatra.n} — ${m.nakshatra.name}**\n\n${nakshatraTheme(
-    m.nakshatra
-  )} (${m.nakshatra.planet} · ${m.nakshatra.deity})\n\n**Xiu ${m.xiu.n} — ${m.xiu.name} ${m.xiu.zh} (approx)**\n\n${
+  const markdown = `# ${m.emoji} ${m.phaseName}\n\n${m.illumPct.toFixed(
+    1
+  )}% illuminated (${m.trend.toLowerCase()}) · ${Math.round(m.age)} days old\n\n${
+    m.voc.isVoc ? `🚫 ${vocEndLabel(m.voc)}` : `✅ Applying ${m.voc.nextAspect}`
+  }\n\nTropical: in ${m.zodiac} · Sidereal: in ${m.siderealZodiac} (Lahiri ${m.ayanamsa.toFixed(2)}°)\n\n**Mansion ${
+    m.mansion.num
+  } — ${m.mansion.name}**\n\n${m.mansion.theme}\n\n**Nakshatra ${m.nakshatra.n} — ${
+    m.nakshatra.name
+  }**\n\n${nakshatraTheme(m.nakshatra)} (${m.nakshatra.planet} · ${m.nakshatra.deity})\n\n**Xiu ${m.xiu.n} — ${
+    m.xiu.name
+  } ${m.xiu.zh} (approx)**\n\n${
     m.xiu.theme
   }\n\n| Planet | Tropical | Sidereal (Lahiri) | Motion |\n| --- | --- | --- | --- |\n${rows}`;
   const copyAll = `${m.phaseName} ${m.illumPct.toFixed(1)}% · Tropical ${m.zodiac} · Sidereal ${m.siderealZodiac} · ${
@@ -41,8 +43,8 @@ export default function Command() {
           <Detail.Metadata.Label title="Masa" text={`🌙 ${m.cal.masa}`} />
           <Detail.Metadata.Label title="Vara" text={`⭐ ${m.cal.vara}`} />
           <Detail.Metadata.Separator />
-          <Detail.Metadata.Label title="Phase" text={`${m.emoji} ${m.phaseName}`} />
-          <Detail.Metadata.Label title="Illumination" text={`✨ ${m.illumPct.toFixed(1)}%`} />
+          <Detail.Metadata.Label title="Phase" text={`${m.emoji} ${m.phaseName} · ${m.trend}`} />
+          <Detail.Metadata.Label title="Illumination" text={`✨ ${m.illumPct.toFixed(1)}% · ${m.trend}`} />
           <Detail.Metadata.Label title="Moon age" text={`⏳ ${Math.round(m.age)} days`} />
           <Detail.Metadata.Label title="Tropical Moon" text={`${m.zodiac}`} />
           <Detail.Metadata.Label title="Sidereal Moon" text={`${m.siderealZodiac}`} />
