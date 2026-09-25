@@ -8,11 +8,13 @@ TypeScript + `@raycast/api`. Zero runtime astro deps — math ported from `28Lun
 ## Run
 `npm install && npm run dev`, then search Raycast for "Moon".
 
-After every src edit: restart `ray develop` so `~/.config/raycast/extensions/moon-mansions/`
-rebuilds, and re-open the menu-bar dropdown (it caches on its `1h` interval).
+After every src edit: `npm run build` (`ray build -e dist`) rebuilds and installs straight into
+`~/.config/raycast/extensions/moon-mansions/`. Verified 2026-09-25: no `ray develop` process
+running, installed bundle still refreshed — so `ray develop` is not required. Then re-open the
+menu-bar dropdown; it caches on its `1h` interval.
 
 ## Key files
-- `src/moon.ts` — `moonLon`, `sunLon`, phase, zodiac, `lonToMansion`, MANSIONS data. Do not retune constants without cross-validating 3 dates vs Stellarium/AstroSeek.
+- `src/moon.ts` — `moonLon`, `sunLon`, phase + waxing/waning `trend`, zodiac, `lonToMansion`, MANSIONS data. Do not retune constants without cross-validating 3 dates vs Stellarium/AstroSeek.
 - `src/systems.ts` — generated Vedic/Chinese lookups. Regenerate from IbnArbi data, never hand-edit.
 - `src/info.tsx` — Detail view command.
 - `src/menu-bar.tsx` — menu-bar command (`interval: 1h`).
