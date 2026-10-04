@@ -238,6 +238,41 @@ export interface XiuInfo {
   group: string;
   theme: string;
 }
+
+// LODGE ICON AUDIT — read this before touching any xiu icon.
+//
+// The per-lodge zodiac ANIMAL is real tradition, stated explicitly in the
+// IbnArbi xiu data and in every xiu table: each palace's seven lodges carry
+// seven consecutive zodiac animals, in zodiac order, starting from that
+// palace's head animal:
+//
+//   lodges  1–7  (Azure Dragon):   Dragon → Dog
+//   lodges  8–14 (Black Tortoise): Dog → Dragon
+//   lodges 15–21 (White Tiger):    Dragon → Tiger
+//   lodges 22–28 (Vermilion Bird): Horse → Rat
+//
+// This table names the animal AND its emoji together, so both stay in sync
+// and a "dragon shown for Ox" mismatch cannot recur. Audit rule: adding or
+// renumbering a lodge requires the animal AND emoji here, the Swift mirror,
+// and the fixture's xiuAnimal field — drift in any of the three fails parity.
+export const XIU_ANIMALS: { animal: string; emoji: string }[] = [
+  { animal: "Dragon", emoji: "🐉" }, { animal: "Snake", emoji: "🐍" },
+  { animal: "Horse", emoji: "🐴" }, { animal: "Goat", emoji: "🐐" },
+  { animal: "Monkey", emoji: "🐒" }, { animal: "Rooster", emoji: "🐓" },
+  { animal: "Dog", emoji: "🐕" }, // 1–7 Azure Dragon
+  { animal: "Dog", emoji: "🐕" }, { animal: "Pig", emoji: "🐖" },
+  { animal: "Rat", emoji: "🐀" }, { animal: "Ox", emoji: "🐂" },
+  { animal: "Rabbit", emoji: "🐇" }, { animal: "Tiger", emoji: "🐅" },
+  { animal: "Dragon", emoji: "🐉" }, // 8–14 Black Tortoise
+  { animal: "Dragon", emoji: "🐉" }, { animal: "Dog", emoji: "🐕" },
+  { animal: "Pig", emoji: "🐖" }, { animal: "Rat", emoji: "🐀" },
+  { animal: "Ox", emoji: "🐂" }, { animal: "Rabbit", emoji: "🐇" },
+  { animal: "Tiger", emoji: "🐅" }, // 15–21 White Tiger
+  { animal: "Horse", emoji: "🐴" }, { animal: "Goat", emoji: "🐐" },
+  { animal: "Monkey", emoji: "🐒" }, { animal: "Rooster", emoji: "🐓" },
+  { animal: "Dog", emoji: "🐕" }, { animal: "Pig", emoji: "🐖" },
+  { animal: "Rat", emoji: "🐀" }, // 22–28 Vermilion Bird
+];
 export const XIU: XiuInfo[] = [
   {
     n: 1,

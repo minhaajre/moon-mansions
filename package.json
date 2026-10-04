@@ -44,6 +44,9 @@
     "dev": "ray develop",
     "fix-lint": "ray lint --fix",
     "lint": "ray lint",
-    "publish": "ray publish"
+    "publish": "ray publish",
+    "parity:gen": "mkdir -p node_modules/.cache && esbuild scripts/gen-parity.mts --bundle --platform=node --format=esm --outfile=node_modules/.cache/gen-parity.mjs --log-level=error && node node_modules/.cache/gen-parity.mjs",
+    "parity": "./scripts/parity-check.sh",
+    "hooks:install": "./scripts/install-hooks.sh"
   }
 }
