@@ -456,7 +456,7 @@ export function moonDegStr(lon: number): string {
 export function moonSignMotion(jd: number, lon: number): "→" | "←" {
   const from = Math.floor((((lon % 360) + 360) % 360) / 30) % 12;
   const to = Math.floor(moonLon(jd + 1 / 1440) / 30) % 12;
-  return ((to - from + 12) % 12) === 11 ? "←" : "→";
+  return (to - from + 12) % 12 === 11 ? "←" : "→";
 }
 
 function planetRow(name: string, lon: number, jd: number, ayanamsa: number): PlanetPosition {
@@ -948,8 +948,8 @@ export function getMoonInfo(date = new Date()): MoonInfo {
     }
   }
   const xiu = XIU[xiuIdx];
-// The animal and its emoji travel together from the audited table, so the
-// displayed icon can never disagree with the named animal.
+  // The animal and its emoji travel together from the audited table, so the
+  // displayed icon can never disagree with the named animal.
   const xiuAnimal = XIU_ANIMALS[xiuIdx];
 
   const planets: PlanetPosition[] = [

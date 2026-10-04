@@ -10,16 +10,18 @@ export default function Command() {
     1
   )}% illuminated (${m.trend.toLowerCase()}) · ${Math.round(m.age)} days old\n\n${
     m.voc.isVoc ? `🚫 ${vocEndLabel(m.voc)}` : `✅ Applying ${m.voc.nextAspect}`
-  }\n\nTropical: ${m.zodiac} ${m.deg} ${m.signMotion} · Sidereal: ${m.siderealZodiac} ${m.siderealDeg} (Lahiri ${m.ayanamsa.toFixed(2)}°)\n\n**Mansion ${
-    m.mansion.num
-  } — ${m.mansion.name}**\n\n${m.mansion.theme}\n\n**Nakshatra ${m.nakshatra.n} — ${
-    m.nakshatra.name
-  }**\n\n${nakshatraTheme(m.nakshatra)} (${m.nakshatra.planet} · ${m.nakshatra.deity})\n\n**Xiu ${m.xiu.n} — ${
-    m.xiu.name
-  } ${m.xiu.zh} (approx)**\n\n${
+  }\n\nTropical: ${m.zodiac} ${m.deg} ${m.signMotion} · Sidereal: ${m.siderealZodiac} ${
+    m.siderealDeg
+  } (Lahiri ${m.ayanamsa.toFixed(2)}°)\n\n**Mansion ${m.mansion.num} — ${m.mansion.name}**\n\n${
+    m.mansion.theme
+  }\n\n**Nakshatra ${m.nakshatra.n} — ${m.nakshatra.name}**\n\n${nakshatraTheme(m.nakshatra)} (${
+    m.nakshatra.planet
+  } · ${m.nakshatra.deity})\n\n**Xiu ${m.xiu.n} — ${m.xiu.name} ${m.xiu.zh} (approx)**\n\n${
     m.xiu.theme
   }\n\n| Planet | Tropical | Sidereal (Lahiri) | Motion |\n| --- | --- | --- | --- |\n${rows}`;
-  const copyAll = `${m.phaseName} ${m.illumPct.toFixed(1)}% · Tropical ${m.zodiac} ${m.deg} ${m.signMotion} · Sidereal ${m.siderealZodiac} ${m.siderealDeg} · ${
+  const copyAll = `${m.phaseName} ${m.illumPct.toFixed(1)}% · Tropical ${m.zodiac} ${m.deg} ${
+    m.signMotion
+  } · Sidereal ${m.siderealZodiac} ${m.siderealDeg} · ${
     m.voc.isVoc ? vocEndLabel(m.voc) : m.voc.nextAspect
   } · Mansion ${m.mansion.num} ${m.mansion.name} · Nakshatra ${m.nakshatra.name} · Xiu ${m.xiu.name}`;
 

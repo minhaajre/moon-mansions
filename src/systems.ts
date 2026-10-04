@@ -256,21 +256,33 @@ export interface XiuInfo {
 // renumbering a lodge requires the animal AND emoji here, the Swift mirror,
 // and the fixture's xiuAnimal field — drift in any of the three fails parity.
 export const XIU_ANIMALS: { animal: string; emoji: string }[] = [
-  { animal: "Dragon", emoji: "🐉" }, { animal: "Snake", emoji: "🐍" },
-  { animal: "Horse", emoji: "🐴" }, { animal: "Goat", emoji: "🐐" },
-  { animal: "Monkey", emoji: "🐒" }, { animal: "Rooster", emoji: "🐓" },
+  { animal: "Dragon", emoji: "🐉" },
+  { animal: "Snake", emoji: "🐍" },
+  { animal: "Horse", emoji: "🐴" },
+  { animal: "Goat", emoji: "🐐" },
+  { animal: "Monkey", emoji: "🐒" },
+  { animal: "Rooster", emoji: "🐓" },
   { animal: "Dog", emoji: "🐕" }, // 1–7 Azure Dragon
-  { animal: "Dog", emoji: "🐕" }, { animal: "Pig", emoji: "🐖" },
-  { animal: "Rat", emoji: "🐀" }, { animal: "Ox", emoji: "🐂" },
-  { animal: "Rabbit", emoji: "🐇" }, { animal: "Tiger", emoji: "🐅" },
+  { animal: "Dog", emoji: "🐕" },
+  { animal: "Pig", emoji: "🐖" },
+  { animal: "Rat", emoji: "🐀" },
+  { animal: "Ox", emoji: "🐂" },
+  { animal: "Rabbit", emoji: "🐇" },
+  { animal: "Tiger", emoji: "🐅" },
   { animal: "Dragon", emoji: "🐉" }, // 8–14 Black Tortoise
-  { animal: "Dragon", emoji: "🐉" }, { animal: "Dog", emoji: "🐕" },
-  { animal: "Pig", emoji: "🐖" }, { animal: "Rat", emoji: "🐀" },
-  { animal: "Ox", emoji: "🐂" }, { animal: "Rabbit", emoji: "🐇" },
+  { animal: "Dragon", emoji: "🐉" },
+  { animal: "Dog", emoji: "🐕" },
+  { animal: "Pig", emoji: "🐖" },
+  { animal: "Rat", emoji: "🐀" },
+  { animal: "Ox", emoji: "🐂" },
+  { animal: "Rabbit", emoji: "🐇" },
   { animal: "Tiger", emoji: "🐅" }, // 15–21 White Tiger
-  { animal: "Horse", emoji: "🐴" }, { animal: "Goat", emoji: "🐐" },
-  { animal: "Monkey", emoji: "🐒" }, { animal: "Rooster", emoji: "🐓" },
-  { animal: "Dog", emoji: "🐕" }, { animal: "Pig", emoji: "🐖" },
+  { animal: "Horse", emoji: "🐴" },
+  { animal: "Goat", emoji: "🐐" },
+  { animal: "Monkey", emoji: "🐒" },
+  { animal: "Rooster", emoji: "🐓" },
+  { animal: "Dog", emoji: "🐕" },
+  { animal: "Pig", emoji: "🐖" },
   { animal: "Rat", emoji: "🐀" }, // 22–28 Vermilion Bird
 ];
 export const XIU: XiuInfo[] = [
