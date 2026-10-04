@@ -57,7 +57,7 @@ it. Push to the fork with `gh` (whose token carries `workflow`) and open the PR 
 
 ## Key files
 - `src/moon.ts` — `moonLon`, `sunLon`, phase + waxing/waning `trend`, zodiac, `lonToMansion`, `getVocInfo`, `vocEndLabel`, MANSIONS data. Do not retune constants without cross-validating 3 dates vs Stellarium/AstroSeek.
-- `src/systems.ts` — generated Vedic/Chinese lookups. Regenerate from IbnArbi data, never hand-edit.
+- `src/systems.ts` — generated Vedic/Chinese lookups. Regenerate from IbnArbi data, never hand-edit. **Before asserting any traditional rule in a comment here, quote the IbnArbi field that carries it.** The xiu lodge animal is the palace animal (Dragon/Tortoise/Tiger/Bird, seven each), not a zodiac cycle — an invented "seven consecutive zodiac animals per palace" rule shipped once, contradicted its own table, and reached the store as a review comment. A confident comment is not evidence; a wrong one is worse than none because it reads as audited.
 - `src/info.tsx` — Detail view command.
 - `src/menu-bar.tsx` — menu-bar command (`interval: 1h`).
 - `parity/fixture.json` — GENERATED cross-port assertion surface. Never hand-edit.
