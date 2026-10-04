@@ -13,6 +13,48 @@ After every src edit: `npm run build` (`ray build -e dist`) rebuilds and install
 running, installed bundle still refreshed — so `ray develop` is not required. Then re-open the
 menu-bar dropdown; it caches on its `1h` interval.
 
+## Publishing to the Raycast Store
+
+**This extension is already published.** `extensions/moon-mansions` exists in
+`raycast/extensions`, so every PR here is an *update* to a live extension, never a
+new addition. Published 2026-10-01.
+
+Before opening any PR, confirm the current store state — do not infer it:
+
+```
+gh api repos/raycast/extensions/contents/extensions/moon-mansions   # 404 => new ext
+gh api repos/raycast/extensions/compare/raycast:main...main          # fork drift
+```
+
+Check `raycast/extensions` **upstream**, never the local fork. The fork is routinely
+hundreds of commits behind, so a 404 on the fork's contents API proves nothing about
+whether the extension is published. That mistake produced a whole-extension PR where a
+5-file feature PR was correct.
+
+Branch from `upstream/main`, not `origin/main`:
+
+```
+git fetch --filter=blob:none upstream main --depth=1
+git checkout -B <branch> upstream/main
+git sparse-checkout set extensions/moon-mansions
+```
+
+`mergeable_state: dirty` on a Raycast PR means the fork is behind, not that the change is wrong.
+
+### CHANGELOG rules
+
+Never rewrite a released version entry. Add a new `## [<what changed>] - {PR_MERGE_DATE}`
+block **on top** and leave released entries byte-identical. The `changelog` CI job enforces
+this. `{PR_MERGE_DATE}` is the intended placeholder for the entry under review; released
+entries carry their real merge date.
+
+### When `ray publish` fails with a 422 on `workflow` scope
+
+GitHub refuses `merge-upstream` for any OAuth token lacking the `workflow` scope, and the
+Raycast CLI hardcodes `scope: "repo"` in its device flow — so re-authenticating cannot fix
+it. Push to the fork with `gh` (whose token carries `workflow`) and open the PR with
+`gh pr create`. Do not retry `npm run publish` for this error.
+
 ## Key files
 - `src/moon.ts` — `moonLon`, `sunLon`, phase + waxing/waning `trend`, zodiac, `lonToMansion`, `getVocInfo`, `vocEndLabel`, MANSIONS data. Do not retune constants without cross-validating 3 dates vs Stellarium/AstroSeek.
 - `src/systems.ts` — generated Vedic/Chinese lookups. Regenerate from IbnArbi data, never hand-edit.
